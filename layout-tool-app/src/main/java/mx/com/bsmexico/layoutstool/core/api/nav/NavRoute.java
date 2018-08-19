@@ -2,7 +2,13 @@ package mx.com.bsmexico.layoutstool.core.api.nav;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
 
 //forward 
 /**
@@ -12,12 +18,14 @@ import java.util.List;
 public class NavRoute {
 
 	private String section;
-	private List<NavNode> path;
-	private int index = 0;
+	private LinkedList<NavNode> path;
+	private ListIterator<NavNode> itr;
 
 	private NavRoute(final BuilderNavRoute builder) {
+		path = new LinkedList<NavNode>();
 		this.section = builder.section;
 		path.addAll(builder.path);
+		itr = path.listIterator();
 	}
 
 	public static class BuilderNavRoute {
@@ -52,8 +60,8 @@ public class NavRoute {
 		 * @param title
 		 * @return
 		 */
-		public BuilderNavRoute addNode(final String title) {
-			this.addNode(title, -1, false, null);
+		public BuilderNavRoute addNode(final String name, final String title) {
+			this.addNode(name, title, -1, false, null);
 			return this;
 		}
 
@@ -64,9 +72,9 @@ public class NavRoute {
 		 * @param img
 		 * @return
 		 */
-		public BuilderNavRoute addNode(final String title, final Integer position, final boolean displace,
-				final FileInputStream img) {
-			this.addNode(new NavNode(title, img, position, displace));
+		public BuilderNavRoute addNode(final String name, final String title, final Integer position,
+				final boolean displace, final FileInputStream img) {
+			this.addNode(new NavNode(name, title, img, position, displace));
 			return this;
 		}
 
@@ -83,6 +91,7 @@ public class NavRoute {
 	}
 
 	public static class NavNode {
+		private String name;
 		private String title;
 		private FileInputStream img;
 		private Integer position;
@@ -94,9 +103,10 @@ public class NavRoute {
 		 * @param position
 		 * @param displace
 		 */
-		public NavNode(String title, FileInputStream img, Integer position, boolean displace) {
+		public NavNode(String name, String title, FileInputStream img, Integer position, boolean displace) {
 			super();
-			this.title = title;
+			this.name = (StringUtils.isBlank(name) ? UUID.randomUUID().toString() : name);
+			this.title = (StringUtils.isBlank(title) ? StringUtils.EMPTY : title);
 			this.img = img;
 			this.position = position;
 			this.displace = displace;
@@ -130,41 +140,66 @@ public class NavRoute {
 			return displace;
 		}
 
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+
 	}
 
 	/**
+	 * Get previous node
+	 * 
+	 * @return previous node in the Route, if current node is the first element then
+	 *         return null
+	 */
+	public NavNode previous() {
+		NavNode node = null;
+		try {
+			node = itr.previous();
+		} catch (NoSuchElementException exception) {
+			// do nothing.
+		}
+		return node;
+	}
+
+	/**
+	 * Get new node
+	 * 
+	 * @return get new node in the Route, if current node is the first element then
+	 *         return null
+	 */
+	public NavNode next() {
+		NavNode node = null;
+		try {
+			node = itr.next();
+		} catch (NoSuchElementException exception) {
+			// do nothing.
+		}
+		return node;
+	}
+
+	/**
+	 * After calling this method, the call next() should return the first node in
+	 * the Route
 	 * 
 	 * @return
 	 */
-	public NavNode back() {
-		if (this.index > 0) {
-			this.index--;
-		}
-		return this.path.get(index);
+	public void goStart() {
+		itr = path.listIterator();
 	}
 
 	/**
+	 * After calling this method, the call previous() should return the last node in
+	 * the Route
+	 * 
 	 * @return
 	 */
-	public NavNode forward() {
-		if (this.index < this.path.size() - 1) {
-			this.index++;
-		}
-		return this.path.get(index);
-	}
-
-	/**
-	 * @return
-	 */
-	public NavNode goStart() {
-		return this.path.get(0);
-	}
-
-	/**
-	 * @return
-	 */
-	public NavNode goEnd() {
-		return this.path.get(this.path.size() - 1);
+	public void goEnd() {
+		while (itr.hasNext())
+			itr.next();
 	}
 
 	/**
@@ -174,8 +209,18 @@ public class NavRoute {
 		return section;
 	}
 
+	/**
+	 * @return
+	 */
 	public boolean hasNext() {
-		return (index < path.size() - 1);
+		return itr.hasNext();
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean hasPrevious() {
+		return itr.hasPrevious();
 	}
 
 	/*
@@ -184,29 +229,24 @@ public class NavRoute {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		path.forEach(node -> {
-			builder.append(node.title);
-			builder.append("/");
-		});
-		if (builder.length() > 0) {
-			builder.insert(0, "/");
-		}
-		return builder.toString();
+		return getPathString(path);
 	}
 
 	/**
 	 * @return
 	 */
 	public String toStringFromCurrentPosition() {
-		StringBuilder builder = new StringBuilder();
-		this.path.subList(this.index, this.path.size() - 1).forEach(node -> {
-			builder.append(node.title);
-			builder.append("/");
-		});
-		if (builder.length() > 0) {
-			builder.insert(0, "/");
+		return getPathString(path.subList(itr.nextIndex(), this.path.size() - 1));
+	}
+
+	private String getPathString(final List<NavNode> nodes) {
+		String result = StringUtils.EMPTY;
+		if (nodes != null && !nodes.isEmpty()) {
+			final List<String> stringPath = new ArrayList<>();
+			stringPath.add(StringUtils.EMPTY);
+			nodes.forEach(node -> stringPath.add(node.title));
+			result = StringUtils.join(stringPath, "/");
 		}
-		return builder.toString();
+		return result;
 	}
 }

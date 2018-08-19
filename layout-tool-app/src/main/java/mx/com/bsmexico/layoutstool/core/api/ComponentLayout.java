@@ -1,7 +1,5 @@
 package mx.com.bsmexico.layoutstool.core.api;
 
-import mx.com.bsmexico.layoutstool.core.api.nav.NavRoute;
-
 /**
  * All class that implements this interface can be a visual and functional part
  * in the Application.
@@ -17,10 +15,4 @@ public interface ComponentLayout {
 	 * @return the region (Axis, Chart, Control, Pane) to show in the Application
 	 */
 	Layout getLayout();
-
-	/**
-	 * Get the route information to anchor the component to some Navigator
-	 * {@link mx.com.bsmexico.layoutstool.core.api.nav.AppNavigator}
-	 */
-	NavRoute getRoute();
 }

@@ -4,8 +4,6 @@ import java.net.URL;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.sun.istack.internal.NotNull;
-
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import mx.com.bsmexico.layoutstool.core.api.nav.NavRoute;
@@ -49,22 +47,20 @@ public class Layout {
 		private URL styleCss;
 		private String className;
 
-		public LayoutBuilder(@NotNull final String layoutName) throws IllegalArgumentException {
+		public LayoutBuilder(final String layoutName) throws IllegalArgumentException {
 			if (StringUtils.isBlank(layoutName)) {
 				throw new IllegalArgumentException("Layouts must have a name");
 			}
 			this.layoutName = layoutName;
 		}
 
-		LayoutBuilder node(final Node region) {
+		public LayoutBuilder node(final Node region) {
 			this.node = (region == null) ? new Pane() : region;
 			return this;
 		}
 
-		LayoutBuilder route(final NavRoute route) {
-			if (route == null) {
-				// TODO mediante el builder generar un route básico
-			} else {
+		public LayoutBuilder route(final NavRoute route) {
+			if (route != null) {
 				this.route = route;
 			}
 			return this;

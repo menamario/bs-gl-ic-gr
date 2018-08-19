@@ -7,7 +7,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 
-import javafx.scene.Node;
+import javafx.scene.Parent;
+import mx.com.bsmexico.layoutstool.core.api.nav.Navigator.NODETYPE;
 
 /**
  * @author jchr
@@ -16,11 +17,12 @@ import javafx.scene.Node;
 public class TreeNavNode {
 
 	private TreeNavNode parent;
+	private NODETYPE type;
 	private List<TreeNavNode> children;
-	private Node graphic;
+	private Parent graphic;
 	private Integer position;
 	private String id;
-	private Node componentLayout;
+	private Object elem;
 
 	/**
 	 * @param id
@@ -29,13 +31,14 @@ public class TreeNavNode {
 	 * @param graphic
 	 * @param position
 	 */
-	public TreeNavNode(final String id, final TreeNavNode parent, final List<TreeNavNode> children, final Node graphic,
+	public TreeNavNode(final String id, final NODETYPE type, final TreeNavNode parent, final List<TreeNavNode> children,
 			final Integer position) {
 		this.parent = parent;
+		this.type = (type == null) ? NODETYPE.NAV_NODE : type;
 		this.children = (children == null) ? new ArrayList<>() : children;
-		this.graphic = graphic;
 		this.id = (StringUtils.isBlank(id)) ? UUID.randomUUID().toString() : id;
 		this.position = (position == null) ? 0 : position;
+
 	}
 
 	/**
@@ -44,16 +47,16 @@ public class TreeNavNode {
 	 * @param graphic
 	 * @param position
 	 */
-	public TreeNavNode(final String id, TreeNavNode parent, Node graphic, final Integer position) {
-		this(id, parent, null, graphic, position);
+	public TreeNavNode(final String id, final NODETYPE type, TreeNavNode parent, final Integer position) {
+		this(id, type, parent, null, position);
 	}
 
 	/**
 	 * @param id
 	 * @param position
 	 */
-	public TreeNavNode(final String id, final Integer position) {
-		this(id, null, null, null, position);
+	public TreeNavNode(final String id, final NODETYPE type, final Integer position) {
+		this(id, type, null, null, position);
 	}
 
 	/**
@@ -108,14 +111,14 @@ public class TreeNavNode {
 	/**
 	 * @return the graphic
 	 */
-	public Node getGraphic() {
+	public Parent getGraphic() {
 		return graphic;
 	}
 
 	/**
 	 * @param graphic the graphic to set
 	 */
-	public void setGraphic(Node graphic) {
+	public void setGraphic(Parent graphic) {
 		this.graphic = graphic;
 	}
 
@@ -141,17 +144,42 @@ public class TreeNavNode {
 	}
 
 	/**
-	 * @return the componentLayout
+	 * @return
 	 */
-	public Node getComponentLayout() {
-		return componentLayout;
+	public Object getElement() {
+		return elem;
 	}
 
 	/**
-	 * @param componentLayout the componentLayout to set
+	 * @param
 	 */
-	public void setComponentLayout(Node componentLayout) {
-		this.componentLayout = componentLayout;
+	public void bind(Object elem) {
+		this.elem = elem;
 	}
 
+	/**
+	 * @return the type
+	 */
+	public NODETYPE getType() {
+		return type;
+	}
+
+	/**
+	 * @return
+	 */
+	public int deep() {
+		int deep = -1;
+		if (parent == null) {
+			// Root node
+			deep = 0;
+		} else {
+			TreeNavNode currentParent = this.parent;
+			deep = 0;			
+			while (currentParent != null) {
+				deep++;
+				currentParent = currentParent.parent;
+			}
+		}
+		return deep;
+	}
 }
