@@ -156,7 +156,7 @@ public class NavigationTest {
 	@Test
 	public void testMainNavigator() {
 		new JFXPanel(); // this will prepare JavaFX toolkit and environment
-		final MainNavigator navigator = new MainNavigator(this.getListBasicComponenetsLayouts());
+		final MainNavigator navigator = new MainNavigator(this.getListBasicComponenetsLayouts(), null);
 
 	}
 

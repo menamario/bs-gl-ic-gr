@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -36,8 +37,11 @@ public class AppLayoutsTool extends Application {
 		root.setHgap(10);
 		root.setVgap(10);
 		root.setPadding(new Insets(25, 25, 25, 25));
-		final MainNavigator navigator = new MainNavigator(this.getListBasicComponenetsLayouts());
+		final Pane workArea = new Pane();
+		workArea.setPrefSize(500, 768);		
+		final MainNavigator navigator = new MainNavigator(this.getListBasicComponenetsLayouts(), workArea);
 		root.add(navigator, 0, 0);
+		root.add(workArea, 1, 0);
 		/*final MenuBar bar = new MenuBar();
 		final Menu menu = new Menu();		
 		menu.setGraphic(getImage("print_layout_single.png",100,100));
@@ -91,17 +95,11 @@ public class AppLayoutsTool extends Application {
 			public Layout getLayout() {
 				final NavRoute.BuilderNavRoute navRuoteBuilder = new NavRoute.BuilderNavRoute("TEST");
 				NavRoute route = null;
-				try {
-					route = navRuoteBuilder.addNode("NODE1", "NODE_1",0,false,getImageInput("pdf.jpeg", 100, 100)).addNode("NODE4", "NODE_4")
-							.addNode("NODE5", "NODE_5").build();
-				} catch (IllegalStateException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return new Layout.LayoutBuilder("l1").route(route).node(new Pane()).build();
+				route = navRuoteBuilder.addNode("NODE1", "NODE_1"/*,0,false,getImageInput("pdf.jpeg", 100, 100)*/).addNode("NODE4", "NODE_4")
+						.addNode("NODE5", "NODE_5").build();
+				final Pane pane = new Pane();
+				pane.getChildren().add(new Button("Component 1"));
+				return new Layout.LayoutBuilder("l1").route(route).node(pane).build();
 			}
 
 		});
@@ -112,7 +110,9 @@ public class AppLayoutsTool extends Application {
 				final NavRoute.BuilderNavRoute navRuoteBuilder = new NavRoute.BuilderNavRoute("TEST");
 				final NavRoute route = navRuoteBuilder.addNode("NODE1", "NODE_1").addNode("NODE2", "NODE_2")
 						.addNode("NODE3", "NODE3_").build();
-				return new Layout.LayoutBuilder("l1").route(route).node(new Pane()).build();
+				final Pane pane = new Pane();
+				pane.getChildren().add(new Button("Component 2"));
+				return new Layout.LayoutBuilder("l2").route(route).node(pane).build();
 			}
 
 		});
@@ -123,7 +123,9 @@ public class AppLayoutsTool extends Application {
 				final NavRoute.BuilderNavRoute navRuoteBuilder = new NavRoute.BuilderNavRoute("TEST");
 				final NavRoute route = navRuoteBuilder.addNode("NODE1", "NODE_1").addNode("NODE2", "NODE_2")
 						.addNode("NODE6", "NODE_6").build();
-				return new Layout.LayoutBuilder("l1").route(route).node(new Pane()).build();
+				final Pane pane = new Pane();
+				pane.getChildren().add(new Button("Component 3"));
+				return new Layout.LayoutBuilder("l3").route(route).node(pane).build();
 			}
 
 		});
@@ -133,17 +135,11 @@ public class AppLayoutsTool extends Application {
 			public Layout getLayout() {
 				final NavRoute.BuilderNavRoute navRuoteBuilder = new NavRoute.BuilderNavRoute("TEST");
 				NavRoute route = null;
-				try {
-					route = navRuoteBuilder.addNode("NODE10", "NODE_10",0,false,getImageInput("pdf.jpeg", 100, 100)).addNode("NODE11", "NODE_11")
-							.addNode("NODE12", "NODE_12").build();
-				} catch (IllegalStateException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return new Layout.LayoutBuilder("l1").route(route).node(new Pane()).build();
+				route = navRuoteBuilder.addNode("NODE10", "NODE_10"/*,0,false,getImageInput("pdf.jpeg", 100, 100)*/).addNode("NODE11", "NODE_11")
+						.addNode("NODE12", "NODE_12").build();
+				final Pane pane = new Pane();
+				pane.getChildren().add(new Button("Component 4"));
+				return new Layout.LayoutBuilder("l4").route(route).node(pane).build();
 			}
 
 		});
