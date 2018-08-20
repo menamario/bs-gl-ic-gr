@@ -12,5 +12,7 @@
 	</properties>
 	<modules>
 		<module>layout-tool-app</module>
-	</modules>
+		<module>layout-tool-components</module>
+		<module>layout-tool-api</module>
+	</modules>	
 </project>

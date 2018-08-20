@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import mx.com.bsmexico.layoutstool.core.api.ComponentLayout;
 import mx.com.bsmexico.layoutstool.core.api.Layout;
 import mx.com.bsmexico.layoutstool.core.api.nav.NavRoute;
+import mx.com.bsmexico.layoutstool.core.api.services.CLServiceProvider;
 
 /**
  * Application
@@ -32,6 +33,8 @@ public class AppLayoutsTool extends Application {
 
 	@Override
 	public void init() throws Exception {
+		final CLServiceProvider provider = CLServiceProvider.getInstance();
+		List<ComponentLayout> components = provider.getComponents();
 		root = new GridPane();
 		root.setAlignment(Pos.CENTER_LEFT);
 		root.setHgap(10);
@@ -39,7 +42,7 @@ public class AppLayoutsTool extends Application {
 		root.setPadding(new Insets(25, 25, 25, 25));
 		final Pane workArea = new Pane();
 		workArea.setPrefSize(500, 768);		
-		final MainNavigator navigator = new MainNavigator(this.getListBasicComponenetsLayouts(), workArea);
+		final MainNavigator navigator = new MainNavigator(components, workArea);
 		root.add(navigator, 0, 0);
 		root.add(workArea, 1, 0);
 		/*final MenuBar bar = new MenuBar();
