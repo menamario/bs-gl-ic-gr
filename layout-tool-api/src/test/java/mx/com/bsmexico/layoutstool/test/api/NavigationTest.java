@@ -10,10 +10,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javafx.embed.swing.JFXPanel;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
-import mx.com.bsmexico.layoutstool.app.MainNavigator;
 import mx.com.bsmexico.layoutstool.core.api.ComponentLayout;
 import mx.com.bsmexico.layoutstool.core.api.Layout;
 import mx.com.bsmexico.layoutstool.core.api.nav.NavRoute;
@@ -150,14 +148,6 @@ public class NavigationTest {
 
 		final AppNavigatorImpl nav = new AppNavigatorImpl();
 		nav.test();
-	}
-
-	@SuppressWarnings("unused")
-	@Test
-	public void testMainNavigator() {
-		new JFXPanel(); // this will prepare JavaFX toolkit and environment
-		final MainNavigator navigator = new MainNavigator(this.getListBasicComponenetsLayouts(), null);
-
 	}
 
 	/**
